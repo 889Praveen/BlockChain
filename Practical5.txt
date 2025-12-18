@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Vault {
+    
+    mapping(address => uint256) public deposits;
+
+    address public admin;
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    function deposit() public payable {
+        require(msg.value > 0, "No ETH sent");
+        deposits[msg.sender] += msg.value;
+    }
+
+    function balance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function convert(uint256 ethAmount) public pure returns (uint256, uint256) {
+        uint256 weiAmt = ethAmount * 1 ether;
+        uint256 gweiAmt = weiAmt / 1 gwei;
+        return (weiAmt, gweiAmt);
+    }
+
+    function units() public pure returns (uint256, uint256, uint256) {
+        uint256 weiUnit = 1 wei;
+        uint256 gweiUnit = 1 gwei;
+        uint256 etherUnit = 1 ether;
+        return (weiUnit, gweiUnit, etherUnit);
+    }
+
+    function release() public {
+        require(msg.sender == admin, "Not authorized");
+        payable(msg.sender).transfer(address(this).balance);
+    }
+}
