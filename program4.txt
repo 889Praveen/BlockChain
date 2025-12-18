@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import "./SimpleStorage.sol";  
+
+contract program4  {
+    SimpleStorage[] public vaults;
+
+    function createVault() external {
+        SimpleStorage newVault = new SimpleStorage();
+        vaults.push(newVault);
+    }
+
+    function storeValue(uint256 vaultIndex, uint256 value) external {
+        require(vaultIndex < vaults.length, "Invalid vault index");
+        SimpleStorage selectedVault = vaults[vaultIndex];
+        selectedVault.store(value);
+    }
+
+    function retrieveValue(uint256 vaultIndex) external view returns (uint256) {
+        require(vaultIndex < vaults.length, "Invalid vault index");
+        SimpleStorage selectedVault = vaults[vaultIndex];
+        return selectedVault.retrieve();
+    }
+
+    function getVaultCount() external view returns (uint256) {
+        return vaults.length;
+    }
+}
+
+
+
+
+
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SimpleStorage {
+    uint256 private storedValue;
+
+
+    function store(uint256 value) external     {
+        storedValue = value;
+    }
+
+ 
+    function retrieve() external  view returns (uint256) {
+        return storedValue;
+    }
+}
